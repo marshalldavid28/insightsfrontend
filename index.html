@@ -268,7 +268,7 @@
       formData.set("flight", `${startDate} to ${endDate}`);
 
       try {
-        const res = await fetch("https://insights.madsapiens.com/generate-insights/", {
+        const res = await fetch("https://madsapiens-report-backend.onrender.com/generate-insights/", {
           method: "POST",
           body: formData,
         });
@@ -307,7 +307,7 @@
       chatLog.scrollTop = chatLog.scrollHeight;
 
       try {
-        const res = await fetch("https://insights.madsapiens.com/generate-insights/", {
+        const res = await fetch("https://madsapiens-report-backend.onrender.com/interact-insight/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
