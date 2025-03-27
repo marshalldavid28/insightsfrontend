@@ -3,187 +3,89 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Madsapiens Campaign Insight Tool</title>
+  <title>Your Campaign Insight Tool</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --background-color: #f5f5f7;
-      --text-color: #1d1d1f;
-      --accent-color: #0071e3;
-      --secondary-color: #86868b;
-      --border-color: #d2d2d7;
-      --chat-user-bg: #f3f3f3;
-      --chat-ai-bg: #ffffff;
-    }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      background-color: var(--background-color);
-      color: var(--text-color);
-      line-height: 1.6;
-      max-width: 700px;
-      margin: 0 auto;
+      font-family: 'Inter', sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
       padding: 2rem;
+      max-width: 720px;
+      margin: auto;
     }
-    
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 600;
+    h1, h2 {
       text-align: center;
-      color: var(--text-color);
-      margin-bottom: 2rem;
-      letter-spacing: -0.04em;
+      margin-bottom: 1.5rem;
     }
-    
     form {
-      background-color: white;
-      border-radius: 16px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
-      padding: 2rem;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       margin-bottom: 2rem;
     }
-    
     label {
-      display: block;
-      margin-bottom: 0.5rem;
-      color: var(--text-color);
       font-weight: 500;
-      font-size: 0.9rem;
+      margin: 1rem 0 0.5rem;
+      display: block;
     }
-    
-    input, textarea, button, select {
+    input, textarea, select, button {
       width: 100%;
       padding: 0.75rem;
-      border: 1px solid var(--border-color);
+      margin-bottom: 1rem;
+      border: 1px solid #d2d2d7;
       border-radius: 8px;
-      background-color: white;
       font-size: 1rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    
-    input:focus, textarea:focus, select:focus {
-      outline: none;
-      border-color: var(--accent-color);
-      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
-    }
-    
-    textarea {
-      resize: vertical;
-      min-height: 200px;
-    }
-    
     button {
-      background-color: var(--accent-color);
+      background-color: #0071e3;
       color: white;
-      border: none;
-      font-weight: 600;
+      font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s, transform 0.1s;
     }
-    
-    button:hover {
-      background-color: #005bd3;
-    }
-    
-    button:active {
-      transform: scale(0.98);
-    }
-    
-    h2 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      text-align: center;
-      color: var(--secondary-color);
-      margin: 2rem 0 1rem;
-      letter-spacing: -0.02em;
-    }
-    
-    /* Chat Interface Styling */
     .chatbox {
-      background-color: white;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
+      background: white;
       padding: 1rem;
+      border: 1px solid #d2d2d7;
+      border-radius: 12px;
       height: 400px;
       overflow-y: auto;
       margin-bottom: 1rem;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-      display: flex;
-      flex-direction: column;
     }
-    
     .chat-entry {
-      max-width: 90%;
-      margin: 0.5rem 0;
       padding: 0.75rem;
       border-radius: 12px;
-      line-height: 1.4;
-      clear: both;
+      margin-bottom: 0.5rem;
+      max-width: 85%;
     }
-    
     .chat-entry.user {
+      background: #f3f3f3;
       align-self: flex-end;
-      background-color: var(--chat-user-bg);
-      color: var(--text-color);
-      margin-left: auto;
       text-align: right;
+      margin-left: auto;
     }
-    
     .chat-entry.ai {
-      align-self: flex-start;
-      background-color: var(--chat-ai-bg);
-      color: var(--text-color);
-      border: 1px solid var(--border-color);
+      background: #ffffff;
+      border: 1px solid #d2d2d7;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
-    
     #chatForm {
       display: flex;
       gap: 0.5rem;
-      align-items: flex-end;
+      flex-wrap: wrap;
     }
-    
     #chatForm textarea {
-      flex-grow: 1;
+      flex: 1;
       min-height: 50px;
-      max-height: 150px;
-      overflow-y: auto;
     }
-    
     #chatForm select {
-      width: auto;
       flex-shrink: 0;
-      max-width: 150px;
+      width: 150px;
     }
-    
     #chatForm button {
       flex-shrink: 0;
-      width: auto;
       padding: 0.75rem 1.5rem;
-    }
-    
-    @media (max-width: 600px) {
-      body {
-        padding: 1rem;
-      }
-      
-      form {
-        padding: 1rem;
-      }
-      
-      #chatForm {
-        flex-direction: column;
-      }
-      
-      #chatForm select, #chatForm button {
-        width: 100%;
-      }
     }
   </style>
 </head>
@@ -194,25 +96,25 @@
   <form id="insightForm">
     <label>Upload DV360 Excel File</label>
     <input type="file" name="file" required />
-    
+
     <label>Campaign Objective</label>
     <input type="text" name="objective" required />
-    
+
     <label>CTR Target (%)</label>
     <input type="number" step="0.01" name="ctr_target" required />
-    
+
     <label>CPM Target (SGD)</label>
     <input type="number" step="0.01" name="cpm_target" required />
-    
+
     <label>Total Budget (SGD)</label>
     <input type="number" step="0.01" name="budget" required />
-    
+
     <label>Flight Start Date</label>
     <input type="date" name="flight_start" required />
-    
+
     <label>Flight End Date</label>
     <input type="date" name="flight_end" required />
-    
+
     <label>Primary Metric</label>
     <select name="primary_metric" required>
       <option value="CTR">CTR</option>
@@ -221,7 +123,7 @@
       <option value="CPC">CPC</option>
       <option value="Cost per Conversion">Cost per Conversion</option>
     </select>
-    
+
     <label>Secondary Metric (Optional)</label>
     <select name="secondary_metric">
       <option value="">None</option>
@@ -231,7 +133,7 @@
       <option value="CPC">CPC</option>
       <option value="Cost per Conversion">Cost per Conversion</option>
     </select>
-    
+
     <button type="submit">Generate Insights</button>
   </form>
 
@@ -254,7 +156,7 @@
 
   <script>
     const form = document.getElementById("insightForm");
-    const output = document.getElementById("output"); // 📄 Main Insights Box
+    const output = document.getElementById("output");
     const chatForm = document.getElementById("chatForm");
     const chatLog = document.getElementById("chatLog");
 
@@ -279,6 +181,7 @@
         }
 
         const data = await res.json();
+        console.log("💬 AI Response from backend:", data);
         output.value = data.report || "No insight generated.";
       } catch (err) {
         output.value = "❌ Error reaching server. Check console.";
@@ -293,12 +196,10 @@
       const mode = chatForm.elements['mode'].value;
       const originalInsight = output.value;
 
-      if (mode === "ask") {
-        const userMsg = document.createElement("div");
-        userMsg.className = "chat-entry user";
-        userMsg.innerText = userPrompt;
-        chatLog.appendChild(userMsg);
-      }
+      const userMsg = document.createElement("div");
+      userMsg.className = "chat-entry user";
+      userMsg.innerText = userPrompt;
+      chatLog.appendChild(userMsg);
 
       const botThinking = document.createElement("div");
       botThinking.className = "chat-entry ai";
@@ -317,30 +218,34 @@
           }),
         });
 
-        if (!res.ok) {
-          botThinking.innerText = "Error communicating with the server.";
-          return;
-        }
-
         const data = await res.json();
+        console.log("📦 Data from server:", data);
+
         botThinking.remove();
 
         const aiResponse = document.createElement("div");
         aiResponse.className = "chat-entry ai";
-        aiResponse.innerText = data.response || "No response generated.";
-        chatLog.appendChild(aiResponse);
 
-        if (mode === "edit") {
-          output.value = data.updated_insight || originalInsight;
+        if (data && data.result) {
+          aiResponse.innerText = data.result;
+          if (mode === "edit") {
+            output.value = data.result;
+          }
+        } else {
+          aiResponse.innerText = "⚠️ No response from model.";
+          console.warn("Unexpected response format:", data);
         }
 
+        chatLog.appendChild(aiResponse);
         chatLog.scrollTop = chatLog.scrollHeight;
         chatForm.reset();
+
       } catch (err) {
-        botThinking.innerText = "Error reaching server. Check console.";
+        botThinking.innerText = "❌ Error reaching server. Check console.";
         console.error(err);
       }
     });
   </script>
+
 </body>
 </html>
