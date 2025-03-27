@@ -18,6 +18,15 @@
       text-align: center;
       margin-bottom: 1.5rem;
     }
+    .info-banner {
+      background: #eef3ff;
+      border-left: 4px solid #0071e3;
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 2rem;
+    }
     form {
       background: white;
       padding: 1.5rem;
@@ -52,6 +61,8 @@
       height: 400px;
       overflow-y: auto;
       margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
     }
     .chat-entry {
       padding: 0.75rem;
@@ -92,6 +103,12 @@
 <body>
 
   <h1>📊 Your Campaign Insights</h1>
+
+  <div class="info-banner">
+    <strong>Prototype Notice:</strong><br>
+    This is a prototype that works for <strong>DV360 Display Campaign Analysis</strong>. You can use any dimensions or metrics as long as it's a <strong>DV360 Open Exchange Display campaign</strong>. <br><br>
+    <em>Coming soon:</em> Upload your media plans directly. Support for DV360 Video & TrueView, Meta Ads, Google Ads, and more platforms.
+  </div>
 
   <form id="insightForm">
     <label>Upload DV360 Excel File</label>
