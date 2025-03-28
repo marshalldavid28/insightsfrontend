@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Campaign Insight Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Madsapiens Campaign Insight Tool</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     body {
@@ -44,153 +44,195 @@
       font-weight: bold;
       cursor: pointer;
     }
-    .checkbox-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    .chatbox {
+      background: white;
+      padding: 1rem;
+      border: 1px solid #d2d2d7;
+      border-radius: 12px;
+      height: 400px;
+      overflow-y: auto;
       margin-bottom: 1rem;
     }
-    .checkbox-group label {
-      display: flex;
-      align-items: center;
-      font-weight: normal;
+    .chat-entry {
+      padding: 0.75rem;
+      border-radius: 12px;
+      margin-bottom: 0.5rem;
+      max-width: 85%;
     }
-    .checkbox-group input {
-      margin-right: 6px;
-      width: auto;
-    }
-    textarea[readonly] {
+    .chat-entry.user {
       background: #f3f3f3;
+      align-self: flex-end;
+      text-align: right;
+      margin-left: auto;
+    }
+    .chat-entry.ai {
+      background: #ffffff;
+      border: 1px solid #d2d2d7;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    #chatForm {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    #chatForm textarea {
+      flex: 1;
+      min-height: 50px;
+    }
+    #chatForm select {
+      flex-shrink: 0;
+      width: 150px;
+    }
+    #chatForm button {
+      flex-shrink: 0;
+      padding: 0.75rem 1.5rem;
     }
   </style>
 </head>
 <body>
 
-<h1>📊 Campaign Insights Generator</h1>
+  <h1>📊 Your Campaign Insights</h1>
 
-<form id="insightForm">
-  <label>Upload DV360 Excel File</label>
-  <input type="file" name="file" id="fileInput" required />
+  <form id="insightForm">
+    <label>Upload DV360 Excel File</label>
+    <input type="file" name="file" required />
 
-  <label>Campaign Objective</label>
-  <input type="text" name="objective" required />
+    <label>Campaign Objective</label>
+    <input type="text" name="objective" required />
 
-  <label>CTR Target (%)</label>
-  <input type="number" step="0.01" name="ctr_target" required />
+    <label>CTR Target (%)</label>
+    <input type="number" step="0.01" name="ctr_target" required />
 
-  <label>CPM Target (SGD)</label>
-  <input type="number" step="0.01" name="cpm_target" required />
+    <label>CPM Target (SGD)</label>
+    <input type="number" step="0.01" name="cpm_target" required />
 
-  <label>Total Budget (SGD)</label>
-  <input type="number" step="0.01" name="budget" required />
+    <label>Total Budget (SGD)</label>
+    <input type="number" step="0.01" name="budget" required />
 
-  <label>Flight Start Date</label>
-  <input type="date" name="flight_start" required />
+    <label>Flight Start Date</label>
+    <input type="date" name="flight_start" required />
 
-  <label>Flight End Date</label>
-  <input type="date" name="flight_end" required />
+    <label>Flight End Date</label>
+    <input type="date" name="flight_end" required />
 
-  <label>Primary Metric</label>
-  <select name="primary_metric" required>
-    <option value="CTR">CTR</option>
-    <option value="CPM">CPM</option>
-    <option value="Conversions">Conversions</option>
-    <option value="CPC">CPC</option>
-    <option value="Cost per Conversion">Cost per Conversion</option>
-  </select>
+    <label>Primary Metric</label>
+    <select name="primary_metric" required>
+      <option value="CTR">CTR</option>
+      <option value="CPM">CPM</option>
+      <option value="Conversions">Conversions</option>
+      <option value="CPC">CPC</option>
+      <option value="Cost per Conversion">Cost per Conversion</option>
+    </select>
 
-  <label>Secondary Metric (Optional)</label>
-  <select name="secondary_metric">
-    <option value="">None</option>
-    <option value="CTR">CTR</option>
-    <option value="CPM">CPM</option>
-    <option value="Conversions">Conversions</option>
-    <option value="CPC">CPC</option>
-    <option value="Cost per Conversion">Cost per Conversion</option>
-  </select>
+    <label>Secondary Metric (Optional)</label>
+    <select name="secondary_metric">
+      <option value="">None</option>
+      <option value="CTR">CTR</option>
+      <option value="CPM">CPM</option>
+      <option value="Conversions">Conversions</option>
+      <option value="CPC">CPC</option>
+      <option value="Cost per Conversion">Cost per Conversion</option>
+    </select>
 
-  <div id="groupOptionsContainer" style="display:none;">
-    <label>Breakdowns to Include</label>
-    <div class="checkbox-group" id="groupCheckboxes"></div>
+    <label>🔍 Select Up to 3 Columns to Analyze</label>
+    <input type="text" name="breakdown_1" placeholder="e.g. Device Type" />
+    <input type="text" name="breakdown_2" placeholder="e.g. Creative" />
+    <input type="text" name="breakdown_3" placeholder="e.g. Region" />
+
+    <button type="submit">Generate Insights</button>
+  </form>
+
+  <h2>📄 Insight Output</h2>
+  <textarea id="output" readonly placeholder="Your insights will appear here..."></textarea>
+
+  <h2>💬 Ask or Edit Your Report</h2>
+  <div class="chatbox" id="chatLog">
+    <div class="chat-entry ai">Hi! I'm your insights analyst. Ask me a question or request an edit to the report.</div>
   </div>
 
-  <button type="submit">Generate Insights</button>
-</form>
+  <form id="chatForm">
+    <textarea name="user_prompt" placeholder="Type your message..." required></textarea>
+    <select name="mode">
+      <option value="ask">Just Ask</option>
+      <option value="edit">Edit the Insight</option>
+    </select>
+    <button type="submit">Send</button>
+  </form>
 
-<h2>📄 Output</h2>
-<textarea id="output" rows="18" readonly placeholder="Your insights will appear here..."></textarea>
+  <script>
+    const form = document.getElementById("insightForm");
+    const output = document.getElementById("output");
+    const chatForm = document.getElementById("chatForm");
+    const chatLog = document.getElementById("chatLog");
 
-<script>
-  const form = document.getElementById("insightForm");
-  const fileInput = document.getElementById("fileInput");
-  const groupOptions = document.getElementById("groupOptionsContainer");
-  const groupCheckboxes = document.getElementById("groupCheckboxes");
-  const output = document.getElementById("output");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      output.value = "⏳ Generating... Please wait.";
 
-  let availableColumns = [];
+      const formData = new FormData(form);
+      const start = form.elements['flight_start'].value;
+      const end = form.elements['flight_end'].value;
+      formData.set("flight", `${start} to ${end}`);
 
-  fileInput.addEventListener("change", async () => {
-    const file = fileInput.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    // Ping the server to get the column names
-    const res = await fetch("https://madsapiens-report-backend.onrender.com/preview-columns/", {
-      method: "POST",
-      body: formData,
+      try {
+        const res = await fetch("https://madsapiens-report-backend.onrender.com/generate-insights/", {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+        output.value = data.report || "⚠️ No insight generated.";
+      } catch (err) {
+        output.value = "❌ Error generating insights.";
+        console.error(err);
+      }
     });
 
-    const data = await res.json();
-    if (data.columns) {
-      groupCheckboxes.innerHTML = "";
-      data.columns.forEach(col => {
-        const label = document.createElement("label");
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.name = "groupings";
-        checkbox.value = col;
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(col));
-        groupCheckboxes.appendChild(label);
-      });
-      groupOptions.style.display = "block";
-    } else {
-      groupOptions.style.display = "none";
-    }
-  });
+    chatForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    output.value = "⏳ Generating insights...";
+      const userPrompt = chatForm.elements['user_prompt'].value;
+      const mode = chatForm.elements['mode'].value;
+      const originalInsight = output.value;
 
-    const formData = new FormData(form);
-    const start = form.elements['flight_start'].value;
-    const end = form.elements['flight_end'].value;
-    formData.set("flight", `${start} to ${end}`);
+      const userMsg = document.createElement("div");
+      userMsg.className = "chat-entry user";
+      userMsg.innerText = userPrompt;
+      chatLog.appendChild(userMsg);
 
-    // Add selected groupings
-    const selected = [...groupCheckboxes.querySelectorAll("input:checked")].map(cb => cb.value);
-    formData.append("selected_groupings", JSON.stringify(selected));
+      const botThinking = document.createElement("div");
+      botThinking.className = "chat-entry ai";
+      botThinking.innerText = "Thinking...";
+      chatLog.appendChild(botThinking);
+      chatLog.scrollTop = chatLog.scrollHeight;
 
-    try {
-      const res = await fetch("https://madsapiens-report-backend.onrender.com/generate-insights/", {
-        method: "POST",
-        body: formData,
-      });
+      try {
+        const res = await fetch("https://madsapiens-report-backend.onrender.com/interact-insight/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            insight: originalInsight,
+            user_prompt: userPrompt,
+            mode: mode
+          }),
+        });
 
-      const data = await res.json();
-      if (data.report) {
-        output.value = data.report;
-      } else {
-        output.value = "⚠️ Something went wrong.\n\n" + JSON.stringify(data, null, 2);
+        const data = await res.json();
+        botThinking.remove();
+
+        const aiResponse = document.createElement("div");
+        aiResponse.className = "chat-entry ai";
+        aiResponse.innerText = data.result || "⚠️ No response from model.";
+        if (mode === "edit" && data.result) {
+          output.value = data.result;
+        }
+        chatLog.appendChild(aiResponse);
+        chatLog.scrollTop = chatLog.scrollHeight;
+        chatForm.reset();
+      } catch (err) {
+        botThinking.innerText = "❌ Error reaching server.";
+        console.error(err);
       }
-    } catch (err) {
-      output.value = "❌ Failed to reach backend.\n\n" + err.message;
-    }
-  });
-</script>
-
+    });
+  </script>
 </body>
 </html>
