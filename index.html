@@ -3,121 +3,194 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Madsapiens Campaign Insights</title>
+  <title>Campaign Insight Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background: #f4f4f4;
-      max-width: 800px;
-      margin: auto;
+      background: #f5f5f7;
+      color: #1d1d1f;
       padding: 2rem;
+      max-width: 720px;
+      margin: auto;
     }
     h1, h2 {
       text-align: center;
+      margin-bottom: 1.5rem;
     }
-    form, .chatbox {
+    form {
       background: white;
       padding: 1.5rem;
-      border-radius: 10px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       margin-bottom: 2rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
     label {
-      font-weight: bold;
+      font-weight: 500;
+      margin: 1rem 0 0.5rem;
       display: block;
-      margin-top: 1rem;
     }
-    input, select, textarea {
+    input, textarea, select, button {
       width: 100%;
-      padding: 0.6rem;
-      margin-top: 0.3rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #d2d2d7;
+      border-radius: 8px;
+      font-size: 1rem;
     }
     button {
-      background: #0071e3;
+      background-color: #0071e3;
       color: white;
       font-weight: bold;
-      padding: 0.8rem 1.5rem;
-      border: none;
-      border-radius: 6px;
       cursor: pointer;
-      margin-top: 1rem;
     }
-    textarea#output {
-      min-height: 300px;
-      font-family: monospace;
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      font-weight: normal;
+    }
+    .checkbox-group input {
+      margin-right: 6px;
+      width: auto;
+    }
+    textarea[readonly] {
+      background: #f3f3f3;
     }
   </style>
 </head>
 <body>
-  <h1>📊 Madsapiens Campaign Insight Tool</h1>
-  <form id="insightForm">
-    <label>Upload DV360 Excel File</label>
-    <input type="file" name="file" required />
 
-    <label>Campaign Objective</label>
-    <input type="text" name="objective" required />
+<h1>📊 Campaign Insights Generator</h1>
 
-    <label>CTR Target (%)</label>
-    <input type="number" name="ctr_target" step="0.01" required />
+<form id="insightForm">
+  <label>Upload DV360 Excel File</label>
+  <input type="file" name="file" id="fileInput" required />
 
-    <label>CPM Target (SGD)</label>
-    <input type="number" name="cpm_target" step="0.01" required />
+  <label>Campaign Objective</label>
+  <input type="text" name="objective" required />
 
-    <label>Budget (SGD)</label>
-    <input type="number" name="budget" step="0.01" required />
+  <label>CTR Target (%)</label>
+  <input type="number" step="0.01" name="ctr_target" required />
 
-    <label>Flight Period</label>
-    <input type="text" name="flight" placeholder="e.g., Feb 1 to Feb 28" required />
+  <label>CPM Target (SGD)</label>
+  <input type="number" step="0.01" name="cpm_target" required />
 
-    <label>Primary Metric</label>
-    <select name="primary_metric" required>
-      <option value="CTR">CTR</option>
-      <option value="CPM">CPM</option>
-      <option value="Conversions">Conversions</option>
-    </select>
+  <label>Total Budget (SGD)</label>
+  <input type="number" step="0.01" name="budget" required />
 
-    <label>Secondary Metric (optional)</label>
-    <select name="secondary_metric">
-      <option value="">None</option>
-      <option value="CTR">CTR</option>
-      <option value="CPM">CPM</option>
-      <option value="Conversions">Conversions</option>
-    </select>
+  <label>Flight Start Date</label>
+  <input type="date" name="flight_start" required />
 
-    <label>Choose Grouping Columns (comma-separated)</label>
-    <input type="text" name="group_columns" placeholder="e.g., Line Item, Creative, Device Type, Device Model" />
+  <label>Flight End Date</label>
+  <input type="date" name="flight_end" required />
 
-    <button type="submit">Generate Insights</button>
-  </form>
+  <label>Primary Metric</label>
+  <select name="primary_metric" required>
+    <option value="CTR">CTR</option>
+    <option value="CPM">CPM</option>
+    <option value="Conversions">Conversions</option>
+    <option value="CPC">CPC</option>
+    <option value="Cost per Conversion">Cost per Conversion</option>
+  </select>
 
-  <h2>📄 Insight Output</h2>
-  <textarea id="output" readonly placeholder="Insights will appear here..."></textarea>
+  <label>Secondary Metric (Optional)</label>
+  <select name="secondary_metric">
+    <option value="">None</option>
+    <option value="CTR">CTR</option>
+    <option value="CPM">CPM</option>
+    <option value="Conversions">Conversions</option>
+    <option value="CPC">CPC</option>
+    <option value="Cost per Conversion">Cost per Conversion</option>
+  </select>
 
-  <script>
-    const form = document.getElementById("insightForm");
-    const output = document.getElementById("output");
+  <div id="groupOptionsContainer" style="display:none;">
+    <label>Breakdowns to Include</label>
+    <div class="checkbox-group" id="groupCheckboxes"></div>
+  </div>
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      output.value = "⏳ Generating insights...";
+  <button type="submit">Generate Insights</button>
+</form>
 
-      const formData = new FormData(form);
+<h2>📄 Output</h2>
+<textarea id="output" rows="18" readonly placeholder="Your insights will appear here..."></textarea>
 
-      try {
-        const res = await fetch("https://madsapiens-report-backend.onrender.com/generate-insights/", {
-          method: "POST",
-          body: formData
-        });
+<script>
+  const form = document.getElementById("insightForm");
+  const fileInput = document.getElementById("fileInput");
+  const groupOptions = document.getElementById("groupOptionsContainer");
+  const groupCheckboxes = document.getElementById("groupCheckboxes");
+  const output = document.getElementById("output");
 
-        const data = await res.json();
-        output.value = data.report || data.error || "⚠️ No response.";
-      } catch (err) {
-        output.value = "❌ Error. Check console.";
-        console.error(err);
-      }
+  let availableColumns = [];
+
+  fileInput.addEventListener("change", async () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    // Ping the server to get the column names
+    const res = await fetch("https://madsapiens-report-backend.onrender.com/preview-columns/", {
+      method: "POST",
+      body: formData,
     });
-  </script>
+
+    const data = await res.json();
+    if (data.columns) {
+      groupCheckboxes.innerHTML = "";
+      data.columns.forEach(col => {
+        const label = document.createElement("label");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.name = "groupings";
+        checkbox.value = col;
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(col));
+        groupCheckboxes.appendChild(label);
+      });
+      groupOptions.style.display = "block";
+    } else {
+      groupOptions.style.display = "none";
+    }
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    output.value = "⏳ Generating insights...";
+
+    const formData = new FormData(form);
+    const start = form.elements['flight_start'].value;
+    const end = form.elements['flight_end'].value;
+    formData.set("flight", `${start} to ${end}`);
+
+    // Add selected groupings
+    const selected = [...groupCheckboxes.querySelectorAll("input:checked")].map(cb => cb.value);
+    formData.append("selected_groupings", JSON.stringify(selected));
+
+    try {
+      const res = await fetch("https://madsapiens-report-backend.onrender.com/generate-insights/", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (data.report) {
+        output.value = data.report;
+      } else {
+        output.value = "⚠️ Something went wrong.\n\n" + JSON.stringify(data, null, 2);
+      }
+    } catch (err) {
+      output.value = "❌ Failed to reach backend.\n\n" + err.message;
+    }
+  });
+</script>
+
 </body>
 </html>
